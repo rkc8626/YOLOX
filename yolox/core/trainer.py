@@ -105,7 +105,7 @@ class Trainer:
 
         with torch.cuda.amp.autocast(enabled=self.amp_training):
             outputs = self.model(inps, targets)
-
+        print(outputs.keys)
         loss = outputs["total_loss"]
 
         self.optimizer.zero_grad()
@@ -282,9 +282,12 @@ class Trainer:
                 if self.args.logger == "tensorboard":
                     self.tblogger.add_scalar(
                         "train/lr", self.meter["lr"].latest, self.progress_in_iter)
+                    print(self.meter.keys())
                     for k, v in loss_meter.items():
                         self.tblogger.add_scalar(
                             f"train/{k}", v.latest, self.progress_in_iter)
+                    # curr_fairness = ...
+                    # self.tblogger.add_scalar("fairness_metric", curr_fairness, self.progress_in_iter)
                 if self.args.logger == "wandb":
                     metrics = {"train/" + k: v.latest for k, v in loss_meter.items()}
                     metrics.update({
